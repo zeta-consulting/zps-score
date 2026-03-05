@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZPS — Score di Performance Operativa</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --zeta-dark: #1a1f2e;
+  --zeta-navy: #2a3148;
+  --zeta-amber: #c8862a;
+  --zeta-amber-soft: #fef6e8;
+  --zeta-teal: #2a9d8f;
+  --zeta-teal-soft: #e6f7f5;
+  --zeta-red: #d94a4a;
+  --zeta-red-soft: #fde8e8;
+  --zeta-orange: #e07c3a;
+  --zeta-orange-soft: #fef0e6;
+  --zeta-green: #2d9e6f;
+  --zeta-green-soft: #e6f7ef;
+  --zeta-gold: #d4a03c;
+  --text-primary: #1a1f2e;
+  --text-secondary: #5a6178;
+  --text-light: #8a90a4;
+  --bg-page: #f4f5f8;
+  --bg-card: #ffffff;
+  --border: #e2e5ec;
+  --shadow-sm: 0 1px 3px rgba(26,31,46,0.06);
+  --shadow-md: 0 4px 16px rgba(26,31,46,0.08);
+  --shadow-lg: 0 8px 32px rgba(26,31,46,0.12);
+  --radius: 12px;
+  --radius-lg: 20px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* HERO */
+.hero {
+  position: relative;
+  background: linear-gradient(140deg, #12161f 0%, #1e2535 40%, #2a3a4a 100%);
+  color: white;
+  padding: 56px 24px 80px;
+  text-align: center;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% 75%, rgba(200,134,42,0.18) 0%, transparent 50%),
+    radial-gradient(circle at 85% 25%, rgba(42,157,143,0.12) 0%, transparent 50%),
+    radial-gradient(circle at 50% 120%, rgba(212,160,60,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 48px;
+  background: var(--bg-page);
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+.hero-content { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+
+.hero-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 36px;
+  padding: 10px 20px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50px;
+  backdrop-filter: blur(10px);
+}
+.hero-logo span { font-size: 13px; font-weight: 500; letter-spacing: 0.5px; opacity: 0.9; }
+.logo-dot { width: 8px; height: 8px; background: var(--zeta-amber); border-radius: 50%; }
+
+.hero-badge {
+  display: inline-block;
+  padding: 6px 18px;
+  background: rgba(200,134,42,0.2);
+  border: 1px solid rgba(200,134,42,0.35);
+  border-radius: 50px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #f0c070;
+  margin-bottom: 24px;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(30px, 5vw, 48px);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+.hero h1 em { font-style: italic; color: #f0c070; }
+.hero-sub {
+  font-size: clamp(15px, 2.5vw, 19px);
+  opacity: 0.8;
+  margin-bottom: 28px;
+  max-width: 540px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.hero-pill .dot { width: 6px; height: 6px; border-radius: 50%; }
+
+/* LAYOUT */
+.container { max-width: 880px; margin: 0 auto; padding: 0 20px; }
+
+/* DASHBOARD */
+.dashboard {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: white;
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+.dashboard-inner {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.dash-zps {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.dash-zps-label { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-light); }
+.dash-zps-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--zeta-dark);
+  line-height: 1;
+}
+.dash-zps-max { font-size: 13px; color: var(--text-light); }
+.dash-zps-band {
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.dash-sections {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+.dash-section-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.dash-section-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dash-section-name { color: var(--text-secondary); font-weight: 500; }
+.dash-section-score { font-weight: 700; color: var(--text-primary); }
+
+/* INTRO */
+.intro-section { padding: 40px 0 28px; }
+.intro-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 36px 40px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+}
+.intro-card h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  margin-bottom: 14px;
+}
+.intro-card p { color: var(--text-secondary); font-size: 15px; margin-bottom: 12px; }
+
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 24px;
+}
+@media(max-width:600px) { .pillars-grid { grid-template-columns: 1fr; } }
+
+.pillar-card {
+  padding: 16px 20px;
+  border-radius: var(--radius);
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.pillar-icon { font-size: 24px; flex-shrink: 0; }
+.pillar-info h4 { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.pillar-info p { font-size: 12px; opacity: 0.7; }
+
+/* DECL LEGEND */
+.decl-section { padding: 0 0 28px; }
+.decl-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+@media(max-width:580px) { .decl-grid { grid-template-columns: 1fr; } }
+.decl-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  box-shadow: var(--shadow-sm);
+}
+.decl-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--zeta-amber); letter-spacing: 0.3px; }
+.decl-scale {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.decl-step {
+  flex: 1;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 4px 2px;
+  border-radius: 6px;
+  color: white;
+  line-height: 1.2;
+}
+
+/* SECTIONS */
+.section-block { margin-bottom: 24px; }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.section-header:hover { background: #fafbfd; }
+.section-header.open { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+.section-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.section-title-group { flex: 1; }
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.section-meta { font-size: 12px; color: var(--text-light); }
+
+.section-score-badge {
+  text-align: right;
+  flex-shrink: 0;
+}
+.section-score-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+}
+.section-score-label { font-size: 11px; color: var(--text-light); font-weight: 500; }
+
+.section-progress-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 0;
+  overflow: hidden;
+}
+.section-progress-fill {
+  height: 100%;
+  border-radius: 0;
+  transition: width 0.4s ease;
+}
+
+.section-chevron {
+  color: var(--text-light);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.section-header.open .section-chevron { transform: rotate(180deg); }
+
+.section-body {
+  display: none;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  padding: 0 0 20px;
+}
+.section-body.open { display: block; }
+
+/* SUBSECTION */
+.subsection { border-top: 1px solid var(--border); }
+.subsection:first-child { border-top: none; }
+.subsection-title {
+  padding: 14px 24px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.subsection-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* QUESTION */
+.question-row {
+  padding: 12px 24px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  border-bottom: 1px solid #f0f2f6;
+  transition: background 0.1s;
+}
+.question-row:hover { background: #fafbfd; }
+.question-row:last-child { border-bottom: none; }
+
+.question-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--bg-page);
+  border: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.question-text-group { flex: 1; min-width: 0; }
+.question-text { font-size: 14px; font-weight: 500; margin-bottom: 8px; line-height: 1.4; }
+.question-decl { font-size: 11px; color: var(--text-light); margin-bottom: 8px; }
+
+.btn-group {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.score-btn {
+  border: 1.5px solid var(--border);
+  background: white;
+  border-radius: 7px;
+  padding: 5px 9px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--text-secondary);
+  line-height: 1.2;
+  text-align: center;
+}
+.score-btn:hover { border-color: var(--zeta-amber); color: var(--zeta-amber); background: var(--zeta-amber-soft); }
+.score-btn.active { border-color: var(--zeta-amber); background: var(--zeta-amber); color: white; }
+.score-btn.active-b { border-color: #2d9e6f; background: #2d9e6f; color: white; }
+.score-btn.active-r { border-color: var(--zeta-red); background: var(--zeta-red); color: white; }
+
+/* SI/NO special */
+.btn-si { min-width: 52px; }
+.btn-no { min-width: 52px; }
+.score-btn.active.btn-si { border-color: var(--zeta-green); background: var(--zeta-green); }
+.score-btn.active.btn-no { border-color: var(--zeta-red); background: var(--zeta-red); }
+
+/* EVENTS TABLE */
+.events-block {
+  padding: 12px 24px;
+}
+.events-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+.events-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+.events-table th {
+  background: #f0f2f6;
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--text-light);
+  text-transform: uppercase;
+}
+.events-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.events-table tr:last-child td { border-bottom: none; }
+.events-input {
+  width: 70px;
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  padding: 5px 10px;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  text-align: center;
+  transition: border-color 0.15s;
+}
+.events-input:focus { outline: none; border-color: var(--zeta-amber); }
+.events-result {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: var(--bg-page);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.events-result-score {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+}
+.events-result-detail { font-size: 12px; color: var(--text-secondary); }
+
+/* SECTION WEIGHT BAR */
+.weight-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  background: rgba(200,134,42,0.1);
+  border: 1px solid rgba(200,134,42,0.2);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--zeta-amber);
+}
+
+/* FINAL SCORE */
+.result-section { padding: 28px 0 48px; }
+.result-card {
+  background: linear-gradient(140deg, #12161f 0%, #1e2535 50%, #243040 100%);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.result-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(200,134,42,0.15) 0%, transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(42,157,143,0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+.result-inner { position: relative; z-index: 1; }
+.result-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  margin-bottom: 32px;
+  opacity: 0.9;
+}
+
+.gauge-area {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+.gauge-wrap { flex-shrink: 0; }
+
+svg.gauge { overflow: visible; }
+
+.radar-bars { flex: 1; min-width: 200px; }
+.radar-bar-row { margin-bottom: 14px; }
+.radar-bar-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 13px;
+}
+.radar-bar-name { font-weight: 500; opacity: 0.85; }
+.radar-bar-val { font-weight: 700; font-family: 'Playfair Display', serif; }
+.radar-bar-track {
+  height: 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.radar-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.interpretation-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 24px;
+}
+@media(max-width:580px) { .interpretation-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.interp-item {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  text-align: center;
+}
+.interp-range { font-size: 15px; font-weight: 700; font-family: 'Playfair Display', serif; margin-bottom: 4px; }
+.interp-label { font-size: 11px; opacity: 0.7; line-height: 1.3; }
+.interp-item.active-interp {
+  background: rgba(200,134,42,0.2);
+  border-color: rgba(200,134,42,0.4);
+}
+
+/* PRINT / EXPORT BTN */
+.action-bar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-reset {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.btn-reset:hover { background: rgba(255,255,255,0.14); }
+.btn-print {
+  background: var(--zeta-amber);
+  color: white;
+}
+.btn-print:hover { background: #b87828; }
+
+/* SECTION open first */
+.section-block:first-of-type .section-header { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+
+/* Responsive tweaks */
+@media(max-width:600px) {
+  .intro-card { padding: 24px 20px; }
+  .result-card { padding: 24px 20px; }
+  .gauge-area { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .dashboard-inner { gap: 12px; }
+  .question-row { flex-direction: column; gap: 10px; }
+}
+
+@media print {
+  .dashboard, .action-bar, .btn-action { display: none !important; }
+  .section-body { display: block !important; }
+  body { background: white; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-logo">
+      <div class="logo-dot"></div>
+      <span>Zeta Consulting — Strumenti Operativi</span>
+    </div>
+    <div class="hero-badge">Indice di Performance Operativa</div>
+    <h1>ZPS Score<br><em>Zeta Production Score</em></h1>
+    <p class="hero-sub">Valutazione strutturata della maturità operativa aziendale su 4 aree chiave</p>
+    <div class="hero-pills">
+      <div class="hero-pill"><div class="dot" style="background:#f0c070"></div> Sicurezza &amp; Ambiente</div>
+      <div class="hero-pill"><div class="dot" style="background:#7fdbb5"></div> Risorse Umane</div>
+      <div class="hero-pill"><div class="dot" style="background:#7bb8f0"></div> Gestione Produzione</div>
+      <div class="hero-pill"><div class="dot" style="background:#f0a070"></div> Calcolo dei Costi</div>
+    </div>
+  </div>
+</div>
+
+<!-- STICKY DASHBOARD -->
+<div class="dashboard">
+  <div class="dashboard-inner">
+    <div class="dash-zps">
+      <div>
+        <div class="dash-zps-label">Score ZPS</div>
+        <div style="display:flex;align-items:baseline;gap:4px">
+          <div class="dash-zps-value" id="dash-total">—</div>
+          <div class="dash-zps-max">/ 5</div>
+        </div>
+      </div>
+      <div class="dash-zps-band" id="dash-band" style="background:rgba(90,97,120,0.1);color:var(--text-light)">—</div>
+    </div>
+    <div class="dash-sections">
+      <div class="dash-section-item">
+        <div class="dash-section-dot" style="background:#d4a03c"></div>
+        <span class="dash-section-name">Sicurezza</span>
+        <span class="dash-section-score" id="dash-s1">—</span>
+      </div>
+      <div class="dash-section-item">
+        <div class="dash-section-dot" style="background:#2d9e6f"></div>
+        <span class="dash-section-name">Risorse Umane</span>
+        <span class="dash-section-score" id="dash-s2">—</span>
+      </div>
+      <div class="dash-section-item">
+        <div class="dash-section-dot" style="background:#3b6b9c"></div>
+        <span class="dash-section-name">Produzione</span>
+        <span class="dash-section-score" id="dash-s3">—</span>
+      </div>
+      <div class="dash-section-item">
+        <div class="dash-section-dot" style="background:#e07c3a"></div>
+        <span class="dash-section-name">Costi</span>
+        <span class="dash-section-score" id="dash-s4">—</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- INTRO -->
+<div class="intro-section">
+  <div class="intro-card">
+    <h2>Cos'è lo ZPS?</h2>
+    <p>Lo <strong>Zeta Production Score</strong> è un indice di maturità operativa che misura il livello di strutturazione e controllo di un'azienda manifatturiera su quattro dimensioni fondamentali. Ogni domanda viene valutata con la scala appropriata (1–5), ponderata per il suo peso specifico e aggregata nel punteggio finale.</p>
+    <p>Il risultato è un valore da <strong>0 a 5</strong> che sintetizza lo stato attuale dell'organizzazione e orienta le priorità di intervento.</p>
+    <div class="pillars-grid">
+      <div class="pillar-card" style="background:#fef9f0;border-color:#f5dca0;">
+        <div class="pillar-icon">🛡️</div>
+        <div class="pillar-info">
+          <h4 style="color:#9a6820">Sicurezza ed Ambiente</h4>
+          <p>Presupposti, KPI, contromisure, eventi</p>
+          <p style="margin-top:4px;font-weight:700;color:#c8862a">Peso: 15%</p>
+        </div>
+      </div>
+      <div class="pillar-card" style="background:#edf8f3;border-color:#a0dfc0;">
+        <div class="pillar-icon">👥</div>
+        <div class="pillar-info">
+          <h4 style="color:#1d7050">Gestione delle Risorse Umane</h4>
+          <p>Organigramma, JD, valutazione, formazione</p>
+          <p style="margin-top:4px;font-weight:700;color:#2d9e6f">Peso: 30%</p>
+        </div>
+      </div>
+      <div class="pillar-card" style="background:#eef4fa;border-color:#a0c0e0;">
+        <div class="pillar-icon">⚙️</div>
+        <div class="pillar-info">
+          <h4 style="color:#2a4a70">Gestione della Produzione</h4>
+          <p>Dati, standard, KPI, layout, azioni</p>
+          <p style="margin-top:4px;font-weight:700;color:#3b6b9c">Peso: 27,5%</p>
+        </div>
+      </div>
+      <div class="pillar-card" style="background:#fef5ee;border-color:#f0c0a0;">
+        <div class="pillar-icon">📊</div>
+        <div class="pillar-info">
+          <h4 style="color:#9a4810">Il Calcolo dei Costi</h4>
+          <p>Raccolta dati, KPI, budget, forecast</p>
+          <p style="margin-top:4px;font-weight:700;color:#e07c3a">Peso: 27,5%</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div class="decl-section">
+  <div style="font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--text-light);margin-bottom:10px;">Guide alla valutazione</div>
+  <div class="decl-grid">
+    <div class="decl-card">
+      <h4>Declaratoria A — Livello di applicazione</h4>
+      <div class="decl-scale">
+        <div class="decl-step" style="background:#d94a4a;font-size:9px;">Non applica</div>
+        <div class="decl-step" style="background:#e07c3a;font-size:9px;">Ha potenzialità</div>
+        <div class="decl-step" style="background:#d4a03c;font-size:9px;">Applica in modo confuso</div>
+        <div class="decl-step" style="background:#2a9d8f;font-size:9px;">Un'area critica</div>
+        <div class="decl-step" style="background:#2d9e6f;font-size:9px;">Tutti i reparti</div>
+      </div>
+    </div>
+    <div class="decl-card">
+      <h4>Declaratoria B — Qualità dell'esecuzione</h4>
+      <div class="decl-scale">
+        <div class="decl-step" style="background:#d94a4a;font-size:9px;">Molto Insuff.</div>
+        <div class="decl-step" style="background:#e07c3a;font-size:9px;">Insuff.</div>
+        <div class="decl-step" style="background:#d4a03c;font-size:9px;">Sufficiente</div>
+        <div class="decl-step" style="background:#2a9d8f;font-size:9px;">Buono</div>
+        <div class="decl-step" style="background:#2d9e6f;font-size:9px;">Ottimo</div>
+      </div>
+    </div>
+    <div class="decl-card">
+      <h4>Declaratoria C — SI / NO</h4>
+      <div class="decl-scale">
+        <div class="decl-step" style="background:#d94a4a;flex:2;">NO → 1</div>
+        <div style="flex:3;text-align:center;font-size:10px;color:var(--text-light)">→</div>
+        <div class="decl-step" style="background:#2d9e6f;flex:2;">SI → 5</div>
+      </div>
+    </div>
+    <div class="decl-card">
+      <h4>Declaratoria D — Livello di completamento</h4>
+      <div class="decl-scale">
+        <div class="decl-step" style="background:#d94a4a;font-size:9px;">0%</div>
+        <div class="decl-step" style="background:#e07c3a;font-size:9px;">30%</div>
+        <div class="decl-step" style="background:#d4a03c;font-size:9px;">50%</div>
+        <div class="decl-step" style="background:#2a9d8f;font-size:9px;">80%</div>
+        <div class="decl-step" style="background:#2d9e6f;font-size:9px;">100%</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 1: SICUREZZA -->
+<div class="section-block" id="block-1">
+  <div class="section-header open" onclick="toggleSection('body-1',this)">
+    <div class="section-icon" style="background:#fef9f0;">🛡️</div>
+    <div class="section-title-group">
+      <div class="section-title">Sicurezza ed Ambiente</div>
+      <div class="section-meta"><span class="weight-badge">Peso 15%</span>&nbsp;&nbsp;4 ambiti · 17 criteri</div>
+    </div>
+    <div class="section-score-badge">
+      <div class="section-score-num" id="score-disp-1" style="color:#d4a03c">—</div>
+      <div class="section-score-label">/ 5</div>
+    </div>
+    <svg class="section-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="section-progress-bar"><div class="section-progress-fill" id="prog-1" style="width:0%;background:#d4a03c"></div></div>
+  <div class="section-body open" id="body-1">
+
+    <div class="subsection">
+      <div class="subsection-title">Presupposti</div>
+      <!-- Q1 -->
+      <div class="question-row">
+        <div class="question-num">1</div>
+        <div class="question-text-group">
+          <div class="question-text">È percepibile l'attenzione e la cura per la sicurezza?</div>
+          <div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div>
+          <div class="btn-group" id="bg-s1-1"></div>
+        </div>
+      </div>
+      <!-- Q2 -->
+      <div class="question-row">
+        <div class="question-num">2</div>
+        <div class="question-text-group">
+          <div class="question-text">È formalizzata la politica sulla sicurezza (messa a disposizione dei DPI)?</div>
+          <div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div>
+          <div class="btn-group" id="bg-s1-2"></div>
+        </div>
+      </div>
+      <!-- Q3 -->
+      <div class="question-row">
+        <div class="question-num">3</div>
+        <div class="question-text-group">
+          <div class="question-text">È formalizzata la politica sulla sicurezza (comunicazione ai dipendenti)?</div>
+          <div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div>
+          <div class="btn-group" id="bg-s1-3"></div>
+        </div>
+      </div>
+      <!-- Q4 -->
+      <div class="question-row">
+        <div class="question-num">4</div>
+        <div class="question-text-group">
+          <div class="question-text">È formalizzata la politica sulla tematica ambientale?</div>
+          <div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div>
+          <div class="btn-group" id="bg-s1-4"></div>
+        </div>
+      </div>
+      <!-- Q5 -->
+      <div class="question-row">
+        <div class="question-num">5</div>
+        <div class="question-text-group">
+          <div class="question-text">L'azienda è dotata di una certificazione ambientale (es. ISO 14001)?</div>
+          <div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,05</div>
+          <div class="btn-group" id="bg-s1-5"></div>
+        </div>
+      </div>
+      <!-- Q6 -->
+      <div class="question-row">
+        <div class="question-num">6</div>
+        <div class="question-text-group">
+          <div class="question-text">L'azienda è dotata di una certificazione sicurezza (es. ISO 45001/18001)?</div>
+          <div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div>
+          <div class="btn-group" id="bg-s1-6"></div>
+        </div>
+      </div>
+      <!-- Q7 -->
+      <div class="question-row">
+        <div class="question-num">7</div>
+        <div class="question-text-group">
+          <div class="question-text">L'azienda è dotata dei documenti obbligatori per legge sulla sicurezza (DVR, CPI)?</div>
+          <div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div>
+          <div class="btn-group" id="bg-s1-7"></div>
+        </div>
+      </div>
+      <!-- Q8 -->
+      <div class="question-row">
+        <div class="question-num">8</div>
+        <div class="question-text-group">
+          <div class="question-text">Il personale utilizza i DPI dove previsti?</div>
+          <div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div>
+          <div class="btn-group" id="bg-s1-8"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Raccolta Dati — KPI</div>
+      <div class="question-row">
+        <div class="question-num">9</div>
+        <div class="question-text-group">
+          <div class="question-text">Vengono registrati gli infortuni?</div>
+          <div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div>
+          <div class="btn-group" id="bg-s1-9"></div>
+        </div>
+      </div>
+      <div class="question-row">
+        <div class="question-num">10</div>
+        <div class="question-text-group">
+          <div class="question-text">Vengono registrati gli incidenti?</div>
+          <div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div>
+          <div class="btn-group" id="bg-s1-10"></div>
+        </div>
+      </div>
+      <div class="question-row">
+        <div class="question-num">11</div>
+        <div class="question-text-group">
+          <div class="question-text">Vengono registrate le medicazioni?</div>
+          <div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div>
+          <div class="btn-group" id="bg-s1-11"></div>
+        </div>
+      </div>
+      <div class="question-row">
+        <div class="question-num">12</div>
+        <div class="question-text-group">
+          <div class="question-text">Vengono registrati i comportamenti e le situazioni pericolose?</div>
+          <div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div>
+          <div class="btn-group" id="bg-s1-12"></div>
+        </div>
+      </div>
+      <div class="question-row">
+        <div class="question-num">13</div>
+        <div class="question-text-group">
+          <div class="question-text">Vengono promossi atteggiamenti pro-attivi (es. box raccolta suggerimenti)?</div>
+          <div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div>
+          <div class="btn-group" id="bg-s1-13"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Contromisure e Formazione</div>
+      <div class="question-row">
+        <div class="question-num">14</div>
+        <div class="question-text-group">
+          <div class="question-text">Analisi causa degli accadimenti</div>
+          <div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div>
+          <div class="btn-group" id="bg-s1-14"></div>
+        </div>
+      </div>
+      <div class="question-row">
+        <div class="question-num">15</div>
+        <div class="question-text-group">
+          <div class="question-text">Applicazione delle contromisure</div>
+          <div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div>
+          <div class="btn-group" id="bg-s1-15"></div>
+        </div>
+      </div>
+      <div class="question-row">
+        <div class="question-num">16</div>
+        <div class="question-text-group">
+          <div class="question-text">Analisi dell'efficacia delle contromisure e della formazione</div>
+          <div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div>
+          <div class="btn-group" id="bg-s1-16"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Score Basato su Eventi (Decl. E)</div>
+      <div class="events-block">
+        <div class="events-label">Inserire il numero di eventi registrati nell'ultimo periodo di riferimento:</div>
+        <table class="events-table">
+          <thead>
+            <tr>
+              <th>Tipo evento</th>
+              <th>Peso evento</th>
+              <th>Numero</th>
+              <th>Contributo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Infortuni gravi</strong> <span style="color:var(--text-light);font-size:11px">(assenza &gt;30 gg)</span></td>
+              <td><span style="color:var(--zeta-red);font-weight:700">×300</span></td>
+              <td><input type="number" class="events-input" id="ev-grave" min="0" value="0" oninput="calcEvents()"></td>
+              <td id="ev-grave-c" style="font-weight:600">0</td>
+            </tr>
+            <tr>
+              <td><strong>Infortuni lievi</strong> <span style="color:var(--text-light);font-size:11px">(assenza &lt;30 gg)</span></td>
+              <td><span style="color:var(--zeta-orange);font-weight:700">×10</span></td>
+              <td><input type="number" class="events-input" id="ev-lieve" min="0" value="0" oninput="calcEvents()"></td>
+              <td id="ev-lieve-c" style="font-weight:600">0</td>
+            </tr>
+            <tr>
+              <td><strong>Medicazioni</strong> <span style="color:var(--text-light);font-size:11px">(senza assenza)</span></td>
+              <td><span style="color:var(--zeta-amber);font-weight:700">×5</span></td>
+              <td><input type="number" class="events-input" id="ev-med" min="0" value="0" oninput="calcEvents()"></td>
+              <td id="ev-med-c" style="font-weight:600">0</td>
+            </tr>
+            <tr>
+              <td><strong>Incidenti</strong> <span style="color:var(--text-light);font-size:11px">(senza lesione)</span></td>
+              <td><span style="color:var(--zeta-teal);font-weight:700">×3</span></td>
+              <td><input type="number" class="events-input" id="ev-inc" min="0" value="0" oninput="calcEvents()"></td>
+              <td id="ev-inc-c" style="font-weight:600">0</td>
+            </tr>
+            <tr>
+              <td><strong>Situazioni / Azioni pericolose</strong></td>
+              <td><span style="color:var(--zeta-green);font-weight:700">×1</span></td>
+              <td><input type="number" class="events-input" id="ev-sap" min="0" value="0" oninput="calcEvents()"></td>
+              <td id="ev-sap-c" style="font-weight:600">0</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="events-result">
+          <div>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-light);margin-bottom:2px">Score Evento</div>
+            <div id="ev-total-disp" style="font-weight:700;font-size:16px">Totale: 0</div>
+          </div>
+          <div style="width:1px;height:40px;background:var(--border)"></div>
+          <div>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-light);margin-bottom:2px">Voto (1-5)</div>
+            <div class="events-result-score" id="ev-score-disp">5</div>
+          </div>
+          <div>
+            <div class="events-result-detail" id="ev-band-disp">x = 0 → Nessun evento registrato</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SECTION 2: HR -->
+<div class="section-block" id="block-2">
+  <div class="section-header" onclick="toggleSection('body-2',this)">
+    <div class="section-icon" style="background:#edf8f3;">👥</div>
+    <div class="section-title-group">
+      <div class="section-title">Gestione delle Risorse Umane</div>
+      <div class="section-meta"><span class="weight-badge">Peso 30%</span>&nbsp;&nbsp;7 ambiti · 27 criteri</div>
+    </div>
+    <div class="section-score-badge">
+      <div class="section-score-num" id="score-disp-2" style="color:#2d9e6f">—</div>
+      <div class="section-score-label">/ 5</div>
+    </div>
+    <svg class="section-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="section-progress-bar"><div class="section-progress-fill" id="prog-2" style="width:0%;background:#2d9e6f"></div></div>
+  <div class="section-body" id="body-2">
+
+    <div class="subsection">
+      <div class="subsection-title">Formalizzazione dell'Organigramma</div>
+      <div class="question-row"><div class="question-num">1</div><div class="question-text-group"><div class="question-text">Esiste un organigramma formalizzato?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,01</div><div class="btn-group" id="bg-s2-1"></div></div></div>
+      <div class="question-row"><div class="question-num">2</div><div class="question-text-group"><div class="question-text">L'organigramma risponde alla struttura organizzativa attuale?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,03</div><div class="btn-group" id="bg-s2-2"></div></div></div>
+      <div class="question-row"><div class="question-num">3</div><div class="question-text-group"><div class="question-text">L'organigramma viene aggiornato ogni qualvolta si presentano variazioni?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,01</div><div class="btn-group" id="bg-s2-3"></div></div></div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Formalizzazione delle Job Description</div>
+      <div class="question-row"><div class="question-num">4</div><div class="question-text-group"><div class="question-text">Esistono Job Description formalizzate?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,025</div><div class="btn-group" id="bg-s2-4"></div></div></div>
+      <div class="question-row"><div class="question-num">5</div><div class="question-text-group"><div class="question-text">Le JD comprendono: Scopo della funzione</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,025</div><div class="btn-group" id="bg-s2-5"></div></div></div>
+      <div class="question-row"><div class="question-num">6</div><div class="question-text-group"><div class="question-text">Le JD comprendono: Attività</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,025</div><div class="btn-group" id="bg-s2-6"></div></div></div>
+      <div class="question-row"><div class="question-num">7</div><div class="question-text-group"><div class="question-text">Le JD comprendono: Requisiti del ruolo</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,025</div><div class="btn-group" id="bg-s2-7"></div></div></div>
+      <div class="question-row"><div class="question-num">8</div><div class="question-text-group"><div class="question-text">Le Job Description prevedono l'identificazione di un livello atteso?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,025</div><div class="btn-group" id="bg-s2-8"></div></div></div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Valutazione del Personale (Job Description)</div>
+      <div class="question-row"><div class="question-num">9</div><div class="question-text-group"><div class="question-text">L'Azienda applica un modello di valutazione?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-9"></div></div></div>
+      <div class="question-row"><div class="question-num">10</div><div class="question-text-group"><div class="question-text">Formalizza le valutazioni con radar chart o strumenti equivalenti?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-10"></div></div></div>
+      <div class="question-row"><div class="question-num">11</div><div class="question-text-group"><div class="question-text">La valutazione è fatta con cadenze prestabilite?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,025</div><div class="btn-group" id="bg-s2-11"></div></div></div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Valutazione del Personale (Punti di Forza)</div>
+      <div class="question-row"><div class="question-num">12</div><div class="question-text-group"><div class="question-text">L'Azienda valuta le competenze extra job?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-12"></div></div></div>
+      <div class="question-row"><div class="question-num">13</div><div class="question-text-group"><div class="question-text">L'Azienda formalizza e tiene traccia delle competenze extra job?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-13"></div></div></div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Analisi del GAP Formativo</div>
+      <div class="question-row"><div class="question-num">14</div><div class="question-text-group"><div class="question-text">L'Azienda valuta il GAP formativo post-valutazione?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,025</div><div class="btn-group" id="bg-s2-14"></div></div></div>
+      <div class="question-row"><div class="question-num">15</div><div class="question-text-group"><div class="question-text">La valutazione del GAP è condivisa con il personale?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,025</div><div class="btn-group" id="bg-s2-15"></div></div></div>
+      <div class="question-row"><div class="question-num">16</div><div class="question-text-group"><div class="question-text">L'azienda sviluppa percorsi formativi personalizzati?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,025</div><div class="btn-group" id="bg-s2-16"></div></div></div>
+      <div class="question-row"><div class="question-num">17</div><div class="question-text-group"><div class="question-text">L'Azienda analizza l'efficacia del percorso formativo?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,025</div><div class="btn-group" id="bg-s2-17"></div></div></div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Gestione delle Figure Chiave</div>
+      <div class="question-row"><div class="question-num">18</div><div class="question-text-group"><div class="question-text">L'Azienda ha individuato le figure chiave dell'organizzazione?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-18"></div></div></div>
+      <div class="question-row"><div class="question-num">19</div><div class="question-text-group"><div class="question-text">L'Azienda condivide la strategia con le figure chiave?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-19"></div></div></div>
+      <div class="question-row"><div class="question-num">20</div><div class="question-text-group"><div class="question-text">L'Azienda individua gli apporti delle singole figure chiave e formalizza progetti?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-20"></div></div></div>
+      <div class="question-row"><div class="question-num">21</div><div class="question-text-group"><div class="question-text">L'Azienda conosce le aspettative personali delle figure chiave?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-21"></div></div></div>
+      <div class="question-row"><div class="question-num">22</div><div class="question-text-group"><div class="question-text">L'Azienda utilizza sistemi di premialità specifici per le figure chiave?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-22"></div></div></div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Non Conformismo Costruttivo</div>
+      <div class="question-row"><div class="question-num">23</div><div class="question-text-group"><div class="question-text">I dipendenti mettono in discussione il loro status quo?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-23"></div></div></div>
+      <div class="question-row"><div class="question-num">24</div><div class="question-text-group"><div class="question-text">I dipendenti possono esprimere opinioni divergenti senza avere ripercussioni?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-24"></div></div></div>
+      <div class="question-row"><div class="question-num">25</div><div class="question-text-group"><div class="question-text">I dipendenti hanno esperienze lavorative che favoriscono la creatività?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-25"></div></div></div>
+      <div class="question-row"><div class="question-num">26</div><div class="question-text-group"><div class="question-text">I dipendenti si ritengono soddisfatti in funzione dei loro obiettivi professionali?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-26"></div></div></div>
+      <div class="question-row"><div class="question-num">27</div><div class="question-text-group"><div class="question-text">I dipendenti hanno esperienze lavorative in team multidisciplinari?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-27"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 3: PRODUZIONE -->
+<div class="section-block" id="block-3">
+  <div class="section-header" onclick="toggleSection('body-3',this)">
+    <div class="section-icon" style="background:#eef4fa;">⚙️</div>
+    <div class="section-title-group">
+      <div class="section-title">Gestione della Produzione</div>
+      <div class="section-meta"><span class="weight-badge">Peso 27,5%</span>&nbsp;&nbsp;6 ambiti · 30 criteri</div>
+    </div>
+    <div class="section-score-badge">
+      <div class="section-score-num" id="score-disp-3" style="color:#3b6b9c">—</div>
+      <div class="section-score-label">/ 5</div>
+    </div>
+    <svg class="section-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="section-progress-bar"><div class="section-progress-fill" id="prog-3" style="width:0%;background:#3b6b9c"></div></div>
+  <div class="section-body" id="body-3">
+
+    <div class="subsection">
+      <div class="subsection-title">Raccolta Dati</div>
+      <div class="question-row"><div class="question-num">1</div><div class="question-text-group"><div class="question-text">Stato di utilizzo del sistema ERP</div><div class="question-decl">Decl. A — Livello applicazione &nbsp;|&nbsp; Peso: 0,02</div><div class="btn-group" id="bg-s3-1"></div></div></div>
+      <div class="question-row"><div class="question-num">2</div><div class="question-text-group"><div class="question-text">Esiste una raccolta dati per gli impianti?</div><div class="question-decl">Decl. A — Livello applicazione &nbsp;|&nbsp; Peso: 0,02</div><div class="btn-group" id="bg-s3-2"></div></div></div>
+      <div class="question-row"><div class="question-num">3</div><div class="question-text-group"><div class="question-text">Status mappatura impianti</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,02</div><div class="btn-group" id="bg-s3-3"></div></div></div>
+      <div class="question-row"><div class="question-num">4</div><div class="question-text-group"><div class="question-text">Livello di informatizzazione della raccolta dati (impianti)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,02</div><div class="btn-group" id="bg-s3-4"></div></div></div>
+      <div class="question-row"><div class="question-num">5</div><div class="question-text-group"><div class="question-text">Esiste una raccolta dati per la MDO indiretta?</div><div class="question-decl">Decl. A — Livello applicazione &nbsp;|&nbsp; Peso: 0,02</div><div class="btn-group" id="bg-s3-5"></div></div></div>
+      <div class="question-row"><div class="question-num">6</div><div class="question-text-group"><div class="question-text">Status mappatura MDO indiretta</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,02</div><div class="btn-group" id="bg-s3-6"></div></div></div>
+      <div class="question-row"><div class="question-num">7</div><div class="question-text-group"><div class="question-text">Livello di informatizzazione della raccolta dati (MDO indiretta)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,02</div><div class="btn-group" id="bg-s3-7"></div></div></div>
+      <div class="question-row"><div class="question-num">8</div><div class="question-text-group"><div class="question-text">Esiste una raccolta dati per i materiali?</div><div class="question-decl">Decl. A — Livello applicazione &nbsp;|&nbsp; Peso: 0,02</div><div class="btn-group" id="bg-s3-8"></div></div></div>
+      <div class="question-row"><div class="question-num">9</div><div class="question-text-group"><div class="question-text">Status mappatura dei materiali</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,02</div><div class="btn-group" id="bg-s3-9"></div></div></div>
+      <div class="question-row"><div class="question-num">10</div><div class="question-text-group"><div class="question-text">Livello di informatizzazione della raccolta dati (materiali)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,02</div><div class="btn-group" id="bg-s3-10"></div></div></div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Definizione dello Standard</div>
+      <div class="question-row"><div class="question-num">11</div><div class="question-text-group"><div class="question-text">Esistono tempi ciclo standard?</div><div class="question-decl">Decl. A — Livello applicazione &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s3-11"></div></div></div>
+      <div class="question-row"><div class="question-num">12</div><div class="question-text-group"><div class="question-text">Esistono distinte base?</div><div class="question-decl">Decl. A — Livello applicazione &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s3-12"></div></div></div>
+      <div class="question-row"><div class="question-num">13</div><div class="question-text-group"><div class="question-text">Si analizzano costantemente gli scostamenti dallo standard?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s3-13"></div></div></div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Area Critica e Team di Lavoro</div>
+      <div class="question-row"><div class="question-num">14</div><div class="question-text-group"><div class="question-text">Si utilizza un approccio verticale nei progetti di miglioramento?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,02</div><div class="btn-group" id="bg-s3-14"></div></div></div>
+      <div class="question-row"><div class="question-num">15</div><div class="question-text-group"><div class="question-text">L'area critica viene individuata in base ai principi ZPS (strategicità, economicità…)?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,03</div><div class="btn-group" id="bg-s3-15"></div></div></div>
+      <div class="question-row"><div class="question-num">16</div><div class="question-text-group"><div class="question-text">Si ha l'abitudine di individuare un team di lavoro (team di progetto)?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,03</div><div class="btn-group" id="bg-s3-16"></div></div></div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">KPI di Produzione</div>
+      <div class="question-row"><div class="question-num">17</div><div class="question-text-group"><div class="question-text">Sono stati individuati dei KPI's di riferimento?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s3-17"></div></div></div>
+      <div class="question-row"><div class="question-num">18</div><div class="question-text-group"><div class="question-text">Stato KPI's utilizzo impianti (Z12)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-18"></div></div></div>
+      <div class="question-row"><div class="question-num">19</div><div class="question-text-group"><div class="question-text">Stato KPI's MDO diretta (Z8)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-19"></div></div></div>
+      <div class="question-row"><div class="question-num">20</div><div class="question-text-group"><div class="question-text">Stato KPI's MDO indiretta (Z13)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-20"></div></div></div>
+      <div class="question-row"><div class="question-num">21</div><div class="question-text-group"><div class="question-text">Stato KPI's fabbisogno impianti (Z3)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-21"></div></div></div>
+      <div class="question-row"><div class="question-num">22</div><div class="question-text-group"><div class="question-text">Stato KPI's manutenzione (Z14)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-22"></div></div></div>
+      <div class="question-row"><div class="question-num">23</div><div class="question-text-group"><div class="question-text">Stato KPI's acquisti (Z18)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-23"></div></div></div>
+      <div class="question-row"><div class="question-num">24</div><div class="question-text-group"><div class="question-text">Stato KPI's materiali (Z19)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-24"></div></div></div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Organizzazione e Layout</div>
+      <div class="question-row"><div class="question-num">25</div><div class="question-text-group"><div class="question-text">Esiste un layout formalizzato?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-25"></div></div></div>
+      <div class="question-row"><div class="question-num">26</div><div class="question-text-group"><div class="question-text">Applicazione metodo 5S alle postazioni di lavoro</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-26"></div></div></div>
+      <div class="question-row"><div class="question-num">27</div><div class="question-text-group"><div class="question-text">Organizzazione dei flussi fisici dei materiali</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-27"></div></div></div>
+      <div class="question-row"><div class="question-num">28</div><div class="question-text-group"><div class="question-text">Organizzazione dei flussi fisici del personale</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-28"></div></div></div>
+      <div class="question-row"><div class="question-num">29</div><div class="question-text-group"><div class="question-text">Utilizzo sistemi Paperless (Z16)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-29"></div></div></div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Azioni e Contromisure</div>
+      <div class="question-row"><div class="question-num">30</div><div class="question-text-group"><div class="question-text">Esistono piani operativi in funzione dell'analisi dei KPI's?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-30"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 4: COSTI -->
+<div class="section-block" id="block-4">
+  <div class="section-header" onclick="toggleSection('body-4',this)">
+    <div class="section-icon" style="background:#fef5ee;">📊</div>
+    <div class="section-title-group">
+      <div class="section-title">Il Calcolo dei Costi</div>
+      <div class="section-meta"><span class="weight-badge">Peso 27,5%</span>&nbsp;&nbsp;3 ambiti · 14 criteri</div>
+    </div>
+    <div class="section-score-badge">
+      <div class="section-score-num" id="score-disp-4" style="color:#e07c3a">—</div>
+      <div class="section-score-label">/ 5</div>
+    </div>
+    <svg class="section-chevron" width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="section-progress-bar"><div class="section-progress-fill" id="prog-4" style="width:0%;background:#e07c3a"></div></div>
+  <div class="section-body" id="body-4">
+
+    <div class="subsection">
+      <div class="subsection-title">Raccolta Dati</div>
+      <div class="question-row"><div class="question-num">1</div><div class="question-text-group"><div class="question-text">Livello di mappatura dei processi aziendali</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s4-1"></div></div></div>
+      <div class="question-row"><div class="question-num">2</div><div class="question-text-group"><div class="question-text">La contabilità è interna?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s4-2"></div></div></div>
+      <div class="question-row"><div class="question-num">3</div><div class="question-text-group"><div class="question-text">Individuazione di tutti gli impianti/processi che assorbono risorse</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s4-3"></div></div></div>
+      <div class="question-row"><div class="question-num">4</div><div class="question-text-group"><div class="question-text">Viene redatto un report economico periodico?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s4-4"></div></div></div>
+      <div class="question-row"><div class="question-num">5</div><div class="question-text-group"><div class="question-text">Livello di analiticità del report economico</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s4-5"></div></div></div>
+      <div class="question-row"><div class="question-num">6</div><div class="question-text-group"><div class="question-text">Esiste una differenziazione tra costi specifici e costi comuni?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s4-6"></div></div></div>
+      <div class="question-row"><div class="question-num">7</div><div class="question-text-group"><div class="question-text">L'azienda ha individuato driver per la ripartizione dei costi comuni?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s4-7"></div></div></div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">KPI Economici</div>
+      <div class="question-row"><div class="question-num">8</div><div class="question-text-group"><div class="question-text">Stato KPI's conto economico di azienda (Z5)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,12</div><div class="btn-group" id="bg-s4-8"></div></div></div>
+      <div class="question-row"><div class="question-num">9</div><div class="question-text-group"><div class="question-text">Stato KPI's conto economico di prodotto (Z2)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,12</div><div class="btn-group" id="bg-s4-9"></div></div></div>
+      <div class="question-row"><div class="question-num">10</div><div class="question-text-group"><div class="question-text">Stato KPI's tariffe impianto (Z6)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,12</div><div class="btn-group" id="bg-s4-10"></div></div></div>
+      <div class="question-row"><div class="question-num">11</div><div class="question-text-group"><div class="question-text">Stato KPI's Budget (Z1)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,12</div><div class="btn-group" id="bg-s4-11"></div></div></div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Analisi dei Dati</div>
+      <div class="question-row"><div class="question-num">12</div><div class="question-text-group"><div class="question-text">Vengono periodicamente definiti piani di budget?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s4-12"></div></div></div>
+      <div class="question-row"><div class="question-num">13</div><div class="question-text-group"><div class="question-text">Vengono periodicamente definiti forecast?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s4-13"></div></div></div>
+      <div class="question-row"><div class="question-num">14</div><div class="question-text-group"><div class="question-text">Vengono analizzati gli scostamenti rispetto a budget e forecast?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,07</div><div class="btn-group" id="bg-s4-14"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FINAL RESULT -->
+<div class="result-section">
+  <div class="result-card">
+    <div class="result-inner">
+      <div class="result-title">Risultato ZPS — Score di Performance Operativa</div>
+      <div class="gauge-area">
+        <div class="gauge-wrap">
+          <svg class="gauge" width="180" height="110" viewBox="0 0 180 110">
+            <defs>
+              <linearGradient id="gGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#d94a4a"/>
+                <stop offset="40%" style="stop-color:#d4a03c"/>
+                <stop offset="100%" style="stop-color:#2d9e6f"/>
+              </linearGradient>
+            </defs>
+            <!-- background arc -->
+            <path d="M 15 95 A 75 75 0 0 1 165 95" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="14" stroke-linecap="round"/>
+            <!-- colored arc -->
+            <path id="gauge-arc" d="M 15 95 A 75 75 0 0 1 165 95" fill="none" stroke="url(#gGrad)" stroke-width="14" stroke-linecap="round" stroke-dasharray="0 236"/>
+            <!-- needle -->
+            <g id="gauge-needle" transform="rotate(-90 90 95)">
+              <line x1="90" y1="95" x2="90" y2="30" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="90" cy="95" r="6" fill="white"/>
+            </g>
+            <!-- center text -->
+            <text id="gauge-text" x="90" y="88" text-anchor="middle" fill="white" font-family="'Playfair Display',serif" font-size="26" font-weight="700">—</text>
+            <text x="90" y="104" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="'DM Sans',sans-serif" font-size="11">/ 5</text>
+          </svg>
+        </div>
+        <div class="radar-bars">
+          <div class="radar-bar-row">
+            <div class="radar-bar-label">
+              <span class="radar-bar-name">🛡️ Sicurezza ed Ambiente <span style="opacity:0.5;font-size:11px">(15%)</span></span>
+              <span class="radar-bar-val" id="res-s1">—</span>
+            </div>
+            <div class="radar-bar-track"><div class="radar-bar-fill" id="bar-s1" style="width:0%;background:#d4a03c"></div></div>
+          </div>
+          <div class="radar-bar-row">
+            <div class="radar-bar-label">
+              <span class="radar-bar-name">👥 Risorse Umane <span style="opacity:0.5;font-size:11px">(30%)</span></span>
+              <span class="radar-bar-val" id="res-s2">—</span>
+            </div>
+            <div class="radar-bar-track"><div class="radar-bar-fill" id="bar-s2" style="width:0%;background:#2d9e6f"></div></div>
+          </div>
+          <div class="radar-bar-row">
+            <div class="radar-bar-label">
+              <span class="radar-bar-name">⚙️ Gestione Produzione <span style="opacity:0.5;font-size:11px">(27,5%)</span></span>
+              <span class="radar-bar-val" id="res-s3">—</span>
+            </div>
+            <div class="radar-bar-track"><div class="radar-bar-fill" id="bar-s3" style="width:0%;background:#3b6b9c"></div></div>
+          </div>
+          <div class="radar-bar-row">
+            <div class="radar-bar-label">
+              <span class="radar-bar-name">📊 Calcolo dei Costi <span style="opacity:0.5;font-size:11px">(27,5%)</span></span>
+              <span class="radar-bar-val" id="res-s4">—</span>
+            </div>
+            <div class="radar-bar-track"><div class="radar-bar-fill" id="bar-s4" style="width:0%;background:#e07c3a"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="interpretation-grid">
+        <div class="interp-item" id="interp-1">
+          <div class="interp-range" style="color:#e87070">0 – 2</div>
+          <div class="interp-label">Critico<br>Intervento urgente</div>
+        </div>
+        <div class="interp-item" id="interp-2">
+          <div class="interp-range" style="color:#e0a060">2 – 3</div>
+          <div class="interp-label">Insufficiente<br>Piano di sviluppo</div>
+        </div>
+        <div class="interp-item" id="interp-3">
+          <div class="interp-range" style="color:#d4c050">3 – 4</div>
+          <div class="interp-label">In sviluppo<br>Consolidare</div>
+        </div>
+        <div class="interp-item" id="interp-4">
+          <div class="interp-range" style="color:#70d490">4 – 5</div>
+          <div class="interp-label">Maturo<br>Mantenere e ottimizzare</div>
+        </div>
+      </div>
+
+      <div class="action-bar">
+        <button class="btn-action btn-reset" onclick="resetAll()">↺ Azzera tutti i valori</button>
+        <button class="btn-action btn-print" onclick="window.print()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="5" width="10" height="7" rx="1" stroke="white" stroke-width="1.3"/><path d="M4 5V2h6v3" stroke="white" stroke-width="1.3"/><rect x="4" y="8" width="6" height="1.5" rx="0.5" fill="white"/></svg>
+          Stampa / Esporta PDF
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ============================================================
+// DATA — Questions per section: [id, decl, peso]
+// ============================================================
+const SECTIONS = {
+  1: {
+    weight: 0.15,
+    color: '#d4a03c',
+    questions: [
+      // Presupposti
+      {id:'s1-1', decl:'C', peso:0.05},
+      {id:'s1-2', decl:'C', peso:0.05},
+      {id:'s1-3', decl:'C', peso:0.05},
+      {id:'s1-4', decl:'C', peso:0.05},
+      {id:'s1-5', decl:'D', peso:0.05},
+      {id:'s1-6', decl:'C', peso:0.05},
+      {id:'s1-7', decl:'C', peso:0.05},
+      {id:'s1-8', decl:'B', peso:0.05},
+      // KPI
+      {id:'s1-9',  decl:'C', peso:0.05},
+      {id:'s1-10', decl:'C', peso:0.05},
+      {id:'s1-11', decl:'C', peso:0.05},
+      {id:'s1-12', decl:'C', peso:0.05},
+      {id:'s1-13', decl:'C', peso:0.05},
+      // Contromisure
+      {id:'s1-14', decl:'B', peso:0.05},
+      {id:'s1-15', decl:'B', peso:0.05},
+      {id:'s1-16', decl:'B', peso:0.05},
+      // Events — special, managed separately
+      {id:'s1-ev',  decl:'E', peso:0.20}
+    ]
+  },
+  2: {
+    weight: 0.30,
+    color: '#2d9e6f',
+    questions: [
+      {id:'s2-1',  decl:'C', peso:0.01},
+      {id:'s2-2',  decl:'B', peso:0.03},
+      {id:'s2-3',  decl:'C', peso:0.01},
+      {id:'s2-4',  decl:'C', peso:0.025},
+      {id:'s2-5',  decl:'B', peso:0.025},
+      {id:'s2-6',  decl:'B', peso:0.025},
+      {id:'s2-7',  decl:'B', peso:0.025},
+      {id:'s2-8',  decl:'C', peso:0.025},
+      {id:'s2-9',  decl:'C', peso:0.05},
+      {id:'s2-10', decl:'B', peso:0.05},
+      {id:'s2-11', decl:'B', peso:0.025},
+      {id:'s2-12', decl:'C', peso:0.05},
+      {id:'s2-13', decl:'B', peso:0.05},
+      {id:'s2-14', decl:'B', peso:0.025},
+      {id:'s2-15', decl:'C', peso:0.025},
+      {id:'s2-16', decl:'B', peso:0.025},
+      {id:'s2-17', decl:'C', peso:0.025},
+      {id:'s2-18', decl:'C', peso:0.05},
+      {id:'s2-19', decl:'C', peso:0.05},
+      {id:'s2-20', decl:'C', peso:0.05},
+      {id:'s2-21', decl:'C', peso:0.05},
+      {id:'s2-22', decl:'C', peso:0.05},
+      {id:'s2-23', decl:'B', peso:0.05},
+      {id:'s2-24', decl:'B', peso:0.05},
+      {id:'s2-25', decl:'B', peso:0.05},
+      {id:'s2-26', decl:'B', peso:0.05},
+      {id:'s2-27', decl:'B', peso:0.05}
+    ]
+  },
+  3: {
+    weight: 0.275,
+    color: '#3b6b9c',
+    questions: [
+      {id:'s3-1',  decl:'A', peso:0.02},
+      {id:'s3-2',  decl:'A', peso:0.02},
+      {id:'s3-3',  decl:'D', peso:0.02},
+      {id:'s3-4',  decl:'D', peso:0.02},
+      {id:'s3-5',  decl:'A', peso:0.02},
+      {id:'s3-6',  decl:'D', peso:0.02},
+      {id:'s3-7',  decl:'D', peso:0.02},
+      {id:'s3-8',  decl:'A', peso:0.02},
+      {id:'s3-9',  decl:'D', peso:0.02},
+      {id:'s3-10', decl:'D', peso:0.02},
+      {id:'s3-11', decl:'A', peso:0.05},
+      {id:'s3-12', decl:'A', peso:0.05},
+      {id:'s3-13', decl:'B', peso:0.05},
+      {id:'s3-14', decl:'C', peso:0.02},
+      {id:'s3-15', decl:'B', peso:0.03},
+      {id:'s3-16', decl:'C', peso:0.03},
+      {id:'s3-17', decl:'B', peso:0.05},
+      {id:'s3-18', decl:'D', peso:0.04},
+      {id:'s3-19', decl:'D', peso:0.04},
+      {id:'s3-20', decl:'D', peso:0.04},
+      {id:'s3-21', decl:'D', peso:0.04},
+      {id:'s3-22', decl:'D', peso:0.04},
+      {id:'s3-23', decl:'D', peso:0.04},
+      {id:'s3-24', decl:'D', peso:0.04},
+      {id:'s3-25', decl:'B', peso:0.04},
+      {id:'s3-26', decl:'D', peso:0.04},
+      {id:'s3-27', decl:'D', peso:0.04},
+      {id:'s3-28', decl:'D', peso:0.04},
+      {id:'s3-29', decl:'D', peso:0.04},
+      {id:'s3-30', decl:'B', peso:0.04}
+    ]
+  },
+  4: {
+    weight: 0.275,
+    color: '#e07c3a',
+    questions: [
+      {id:'s4-1',  decl:'D', peso:0.05},
+      {id:'s4-2',  decl:'C', peso:0.05},
+      {id:'s4-3',  decl:'D', peso:0.05},
+      {id:'s4-4',  decl:'B', peso:0.05},
+      {id:'s4-5',  decl:'D', peso:0.05},
+      {id:'s4-6',  decl:'C', peso:0.05},
+      {id:'s4-7',  decl:'C', peso:0.05},
+      {id:'s4-8',  decl:'D', peso:0.12},
+      {id:'s4-9',  decl:'D', peso:0.12},
+      {id:'s4-10', decl:'D', peso:0.12},
+      {id:'s4-11', decl:'D', peso:0.12},
+      {id:'s4-12', decl:'C', peso:0.05},
+      {id:'s4-13', decl:'C', peso:0.05},
+      {id:'s4-14', decl:'C', peso:0.07}
+    ]
+  }
+};
+
+// State
+const scores = {};
+let evScore = 5;
+
+// Declaratoria configs
+const DECL = {
+  A: [
+    {val:1, label:'Non applica'},
+    {val:2, label:'Ha potenzialità'},
+    {val:3, label:'Confuso/dis.'},
+    {val:4, label:"Un'area critica"},
+    {val:5, label:'Tutti i reparti'}
+  ],
+  B: [
+    {val:1, label:'M. Insuff.'},
+    {val:2, label:'Insuff.'},
+    {val:3, label:'Sufficiente'},
+    {val:4, label:'Buono'},
+    {val:5, label:'Ottimo'}
+  ],
+  C: [
+    {val:1, label:'NO'},
+    {val:5, label:'SI'}
+  ],
+  D: [
+    {val:1, label:'0%'},
+    {val:2, label:'30%'},
+    {val:3, label:'50%'},
+    {val:4, label:'80%'},
+    {val:5, label:'100%'}
+  ]
+};
+
+function renderButtons(qid, decl) {
+  const container = document.getElementById('bg-' + qid);
+  if (!container) return;
+  const opts = DECL[decl];
+  container.innerHTML = '';
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'score-btn' + (decl === 'C' ? (opt.val === 1 ? ' btn-no' : ' btn-si') : '');
+    btn.textContent = opt.label;
+    btn.dataset.val = opt.val;
+    btn.onclick = () => selectScore(qid, opt.val, decl, container);
+    container.appendChild(btn);
+  });
+}
+
+function selectScore(qid, val, decl, container) {
+  scores[qid] = val;
+  container.querySelectorAll('.score-btn').forEach(b => {
+    b.classList.remove('active');
+    if (parseInt(b.dataset.val) === val) b.classList.add('active');
+  });
+  updateAll();
+}
+
+function calcSectionScore(sectionNum) {
+  const qs = SECTIONS[sectionNum].questions;
+  let totalPeso = 0, totalWeighted = 0, answered = 0;
+  qs.forEach(q => {
+    if (q.decl === 'E') {
+      totalPeso += q.peso;
+      totalWeighted += evScore * q.peso;
+      answered++;
+      return;
+    }
+    const s = scores[q.id];
+    if (s !== undefined) {
+      totalPeso += q.peso;
+      totalWeighted += s * q.peso;
+      answered++;
+    }
+  });
+  if (totalPeso === 0) return null;
+  return totalWeighted; // raw weighted sum (since all pesosum to 1, this is 1-5 range)
+}
+
+function updateAll() {
+  const sScores = {};
+  for (let i = 1; i <= 4; i++) {
+    sScores[i] = calcSectionScore(i);
+    const s = sScores[i];
+    const disp = s !== null ? s.toFixed(2) : '—';
+    document.getElementById('score-disp-' + i).textContent = disp;
+    document.getElementById('dash-s' + i).textContent = disp;
+    const pct = s !== null ? Math.min(100, (s/5)*100) : 0;
+    document.getElementById('prog-' + i).style.width = pct + '%';
+    // result bars
+    if (document.getElementById('res-s'+i)) {
+      document.getElementById('res-s'+i).textContent = disp;
+      document.getElementById('bar-s'+i).style.width = pct + '%';
+    }
+  }
+  // ZPS total
+  let total = 0, hasAny = false;
+  for (let i = 1; i <= 4; i++) {
+    if (sScores[i] !== null) {
+      total += sScores[i] * SECTIONS[i].weight;
+      hasAny = true;
+    }
+  }
+  if (!hasAny) {
+    document.getElementById('dash-total').textContent = '—';
+    document.getElementById('gauge-text').textContent = '—';
+    document.getElementById('dash-band').textContent = '—';
+    document.getElementById('dash-band').style.background = 'rgba(90,97,120,0.1)';
+    document.getElementById('dash-band').style.color = 'var(--text-light)';
+    updateGauge(0, false);
+    return;
+  }
+  const totalDisp = total.toFixed(2);
+  document.getElementById('dash-total').textContent = totalDisp;
+  document.getElementById('gauge-text').textContent = totalDisp;
+  updateGauge(total, true);
+  // Band
+  let band, bandBg, bandColor;
+  if (total < 2) { band='Critico'; bandBg='rgba(217,74,74,0.12)'; bandColor='#d94a4a'; }
+  else if (total < 3) { band='Insufficiente'; bandBg='rgba(224,124,58,0.12)'; bandColor='#e07c3a'; }
+  else if (total < 4) { band='In Sviluppo'; bandBg='rgba(212,160,60,0.12)'; bandColor='#d4a03c'; }
+  else { band='Maturo'; bandBg='rgba(45,158,111,0.12)'; bandColor='#2d9e6f'; }
+  const bandEl = document.getElementById('dash-band');
+  bandEl.textContent = band;
+  bandEl.style.background = bandBg;
+  bandEl.style.color = bandColor;
+  // interpretation highlight
+  for (let k = 1; k <= 4; k++) {
+    document.getElementById('interp-' + k).classList.remove('active-interp');
+  }
+  if (total < 2) document.getElementById('interp-1').classList.add('active-interp');
+  else if (total < 3) document.getElementById('interp-2').classList.add('active-interp');
+  else if (total < 4) document.getElementById('interp-3').classList.add('active-interp');
+  else document.getElementById('interp-4').classList.add('active-interp');
+}
+
+function updateGauge(val, active) {
+  const totalArcLen = 236;
+  const pct = active ? Math.min(1, val / 5) : 0;
+  const dashArr = (pct * totalArcLen) + ' ' + ((1-pct)*totalArcLen + 10);
+  document.getElementById('gauge-arc').setAttribute('stroke-dasharray', dashArr);
+  // needle
+  const angle = -90 + pct * 180;
+  document.getElementById('gauge-needle').setAttribute('transform', 'rotate(' + angle + ' 90 95)');
+}
+
+function calcEvents() {
+  const grave = parseInt(document.getElementById('ev-grave').value)||0;
+  const lieve = parseInt(document.getElementById('ev-lieve').value)||0;
+  const med   = parseInt(document.getElementById('ev-med').value)||0;
+  const inc   = parseInt(document.getElementById('ev-inc').value)||0;
+  const sap   = parseInt(document.getElementById('ev-sap').value)||0;
+  const cGrave = grave*300, cLieve=lieve*10, cMed=med*5, cInc=inc*3, cSap=sap*1;
+  document.getElementById('ev-grave-c').textContent = cGrave;
+  document.getElementById('ev-lieve-c').textContent = cLieve;
+  document.getElementById('ev-med-c').textContent   = cMed;
+  document.getElementById('ev-inc-c').textContent   = cInc;
+  document.getElementById('ev-sap-c').textContent   = cSap;
+  const tot = cGrave+cLieve+cMed+cInc+cSap;
+  document.getElementById('ev-total-disp').textContent = 'Totale: ' + tot;
+  let sc, band;
+  if (tot === 0)         { sc=5; band='x = 0 → Nessun evento (eccellente)'; }
+  else if (tot <= 3)     { sc=4; band='0 < x ≤ 3 → Molto basso'; }
+  else if (tot <= 5)     { sc=3; band='3 < x ≤ 5 → Basso'; }
+  else if (tot <= 10)    { sc=2; band='5 < x ≤ 10 → Medio'; }
+  else if (tot <= 300)   { sc=1; band='10 < x ≤ 300 → Alto'; }
+  else                   { sc=0; band='x ≥ 300 → Critico'; }
+  evScore = sc;
+  document.getElementById('ev-score-disp').textContent = sc;
+  document.getElementById('ev-band-disp').textContent = band;
+  updateAll();
+}
+
+function toggleSection(bodyId, header) {
+  const body = document.getElementById(bodyId);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  header.classList.toggle('open', !isOpen);
+}
+
+function resetAll() {
+  if (!confirm('Azzerare tutti i valori inseriti?')) return;
+  for (const k in scores) delete scores[k];
+  evScore = 5;
+  document.querySelectorAll('.score-btn').forEach(b => b.classList.remove('active'));
+  ['ev-grave','ev-lieve','ev-med','ev-inc','ev-sap'].forEach(id => document.getElementById(id).value=0);
+  calcEvents();
+  updateAll();
+}
+
+// INIT
+function init() {
+  // Render buttons for all questions
+  for (let sNum = 1; sNum <= 4; sNum++) {
+    SECTIONS[sNum].questions.forEach(q => {
+      if (q.decl !== 'E') {
+        renderButtons(q.id, q.decl);
+      }
+    });
+  }
+  // Set initial states
+  calcEvents();
+  updateAll();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
