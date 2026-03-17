@@ -1423,7 +1423,8 @@ const SECTIONS = {
 
 // State
 const scores = {};
-let evScore = null;
+let evScore = 5;
+let evTouched = false;
 
 // Declaratoria configs
 const DECL = {
@@ -1483,7 +1484,7 @@ function calcSectionScore(sectionNum) {
   let totalPeso = 0, totalWeighted = 0, answered = 0;
   qs.forEach(q => {
     if (q.decl === 'E') {
-      if (evScore !== null) {
+      if (evTouched) {
         totalPeso += q.peso;
         totalWeighted += evScore * q.peso;
         answered++;
@@ -1569,7 +1570,7 @@ function updateGauge(val, active) {
 }
 
 function calcEvents() {
-  const grave = parseInt(document.getElementById('ev-grave').value)||0;
+  evTouched = true;
   const lieve = parseInt(document.getElementById('ev-lieve').value)||0;
   const med   = parseInt(document.getElementById('ev-med').value)||0;
   const inc   = parseInt(document.getElementById('ev-inc').value)||0;
@@ -1605,13 +1606,14 @@ function toggleSection(bodyId, header) {
 function resetAll() {
   if (!confirm('Azzerare tutti i valori inseriti?')) return;
   for (const k in scores) delete scores[k];
-  evScore = null;
+  evScore = 5;
+  evTouched = false;
   document.querySelectorAll('.score-btn').forEach(b => b.classList.remove('active'));
   ['ev-grave','ev-lieve','ev-med','ev-inc','ev-sap'].forEach(id => document.getElementById(id).value=0);
-  ['ev-grave-c','ev-lieve-c','ev-med-c','ev-inc-c','ev-sap-c'].forEach(id => document.getElementById(id).textContent='0');
+  ['ev-grave-c','ev-lieve-c','ev-med-c','ev-inc-c','ev-sap-c'].forEach(id => document.getElementById(id).textContent=0);
   document.getElementById('ev-total-disp').textContent = 'Totale: 0';
-  document.getElementById('ev-score-disp').textContent = '—';
-  document.getElementById('ev-band-disp').textContent = '—';
+  document.getElementById('ev-score-disp').textContent = 5;
+  document.getElementById('ev-band-disp').textContent = 'x = 0 → Nessun evento (eccellente)';
   updateAll();
 }
 
@@ -1625,9 +1627,6 @@ function init() {
       }
     });
   }
-  // Set initial states
-  document.getElementById('ev-score-disp').textContent = '—';
-  document.getElementById('ev-band-disp').textContent = '—';
   updateAll();
 }
 
