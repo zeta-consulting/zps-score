@@ -1423,7 +1423,7 @@ const SECTIONS = {
 
 // State
 const scores = {};
-let evScore = 5;
+let evScore = null;
 
 // Declaratoria configs
 const DECL = {
@@ -1483,9 +1483,11 @@ function calcSectionScore(sectionNum) {
   let totalPeso = 0, totalWeighted = 0, answered = 0;
   qs.forEach(q => {
     if (q.decl === 'E') {
-      totalPeso += q.peso;
-      totalWeighted += evScore * q.peso;
-      answered++;
+      if (evScore !== null) {
+        totalPeso += q.peso;
+        totalWeighted += evScore * q.peso;
+        answered++;
+      }
       return;
     }
     const s = scores[q.id];
@@ -1603,10 +1605,13 @@ function toggleSection(bodyId, header) {
 function resetAll() {
   if (!confirm('Azzerare tutti i valori inseriti?')) return;
   for (const k in scores) delete scores[k];
-  evScore = 5;
+  evScore = null;
   document.querySelectorAll('.score-btn').forEach(b => b.classList.remove('active'));
   ['ev-grave','ev-lieve','ev-med','ev-inc','ev-sap'].forEach(id => document.getElementById(id).value=0);
-  calcEvents();
+  ['ev-grave-c','ev-lieve-c','ev-med-c','ev-inc-c','ev-sap-c'].forEach(id => document.getElementById(id).textContent='0');
+  document.getElementById('ev-total-disp').textContent = 'Totale: 0';
+  document.getElementById('ev-score-disp').textContent = '—';
+  document.getElementById('ev-band-disp').textContent = '—';
   updateAll();
 }
 
@@ -1621,7 +1626,8 @@ function init() {
     });
   }
   // Set initial states
-  calcEvents();
+  document.getElementById('ev-score-disp').textContent = '—';
+  document.getElementById('ev-band-disp').textContent = '—';
   updateAll();
 }
 
