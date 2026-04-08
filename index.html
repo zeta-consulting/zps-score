@@ -606,9 +606,6 @@ svg.gauge { overflow: visible; }
 }
 .btn-print:hover { background: #b87828; }
 
-/* SECTION open first */
-.section-block:first-of-type .section-header { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
-
 /* Responsive tweaks */
 @media(max-width:600px) {
   .intro-card { padding: 24px 20px; }
@@ -618,10 +615,113 @@ svg.gauge { overflow: visible; }
   .question-row { flex-direction: column; gap: 10px; }
 }
 
+/* ============================================================
+   PRINT / PDF — FIX COMPLETO
+   ============================================================ */
 @media print {
-  .dashboard, .action-bar, .btn-action { display: none !important; }
+  /* Nascondi elementi UI non necessari */
+  .dashboard,
+  .action-bar,
+  .btn-action { display: none !important; }
+
+  /* Apri tutti i pannelli sezione */
   .section-body { display: block !important; }
+  .section-header { border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important; }
+
   body { background: white; }
+
+  /* Forza stampa dei colori di sfondo e delle immagini */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Evita interruzioni di pagina spezzate */
+  .section-block,
+  .result-section { page-break-inside: avoid; }
+  .result-section { page-break-before: auto; }
+
+  /* I 4 riquadri colorati restano tutti sulla stessa pagina */
+  .pillars-grid {
+    page-break-before: always;
+    break-before: page;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Nessun taglio tra il titolo di un sottogruppo e le sue domande */
+  .subsection {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Nessun taglio a metà di una domanda */
+  .question-row {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* ---- Result card: sfondo scuro + testo bianco garantiti ---- */
+  .result-card {
+    background: #1a2030 !important;
+    color: white !important;
+    border: 2px solid #3a4560 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Assicura che tutto il testo interno sia leggibile */
+  .result-card,
+  .result-card *:not(.radar-bar-fill):not(.radar-bar-track):not(.interp-item) {
+    color: white !important;
+  }
+
+  .result-title { color: white !important; opacity: 1 !important; }
+
+  .radar-bar-track {
+    background: rgba(255,255,255,0.15) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+  }
+
+  .radar-bar-fill {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .interp-item {
+    background: rgba(255,255,255,0.08) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+  }
+
+  .interp-item.active-interp {
+    background: rgba(200,134,42,0.35) !important;
+    border-color: rgba(200,134,42,0.6) !important;
+  }
+
+  .interp-range,
+  .interp-label { color: white !important; opacity: 1 !important; }
+
+  .radar-bar-name,
+  .radar-bar-val { color: white !important; opacity: 1 !important; }
+
+  /* Gauge SVG: testo visibile */
+  .gauge text { fill: white !important; }
+  #gauge-text { fill: white !important; }
+
+  /* Hero: sfondo scuro in stampa */
+  .hero {
+    background: #1a2030 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .hero * { color: white !important; }
+
+  /* Bottoni selezionati visibili in stampa */
+  .score-btn.active {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }
 </style>
 </head>
@@ -795,7 +895,6 @@ svg.gauge { overflow: visible; }
 
     <div class="subsection">
       <div class="subsection-title">Presupposti</div>
-      <!-- Q1 -->
       <div class="question-row">
         <div class="question-num">1</div>
         <div class="question-text-group">
@@ -804,7 +903,6 @@ svg.gauge { overflow: visible; }
           <div class="btn-group" id="bg-s1-1"></div>
         </div>
       </div>
-      <!-- Q2 -->
       <div class="question-row">
         <div class="question-num">2</div>
         <div class="question-text-group">
@@ -813,7 +911,6 @@ svg.gauge { overflow: visible; }
           <div class="btn-group" id="bg-s1-2"></div>
         </div>
       </div>
-      <!-- Q3 -->
       <div class="question-row">
         <div class="question-num">3</div>
         <div class="question-text-group">
@@ -822,7 +919,6 @@ svg.gauge { overflow: visible; }
           <div class="btn-group" id="bg-s1-3"></div>
         </div>
       </div>
-      <!-- Q4 -->
       <div class="question-row">
         <div class="question-num">4</div>
         <div class="question-text-group">
@@ -831,7 +927,6 @@ svg.gauge { overflow: visible; }
           <div class="btn-group" id="bg-s1-4"></div>
         </div>
       </div>
-      <!-- Q5 -->
       <div class="question-row">
         <div class="question-num">5</div>
         <div class="question-text-group">
@@ -840,7 +935,6 @@ svg.gauge { overflow: visible; }
           <div class="btn-group" id="bg-s1-5"></div>
         </div>
       </div>
-      <!-- Q6 -->
       <div class="question-row">
         <div class="question-num">6</div>
         <div class="question-text-group">
@@ -849,7 +943,6 @@ svg.gauge { overflow: visible; }
           <div class="btn-group" id="bg-s1-6"></div>
         </div>
       </div>
-      <!-- Q7 -->
       <div class="question-row">
         <div class="question-num">7</div>
         <div class="question-text-group">
@@ -858,7 +951,6 @@ svg.gauge { overflow: visible; }
           <div class="btn-group" id="bg-s1-7"></div>
         </div>
       </div>
-      <!-- Q8 -->
       <div class="question-row">
         <div class="question-num">8</div>
         <div class="question-text-group">
@@ -871,74 +963,18 @@ svg.gauge { overflow: visible; }
 
     <div class="subsection">
       <div class="subsection-title">Raccolta Dati — KPI</div>
-      <div class="question-row">
-        <div class="question-num">9</div>
-        <div class="question-text-group">
-          <div class="question-text">Vengono registrati gli infortuni?</div>
-          <div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div>
-          <div class="btn-group" id="bg-s1-9"></div>
-        </div>
-      </div>
-      <div class="question-row">
-        <div class="question-num">10</div>
-        <div class="question-text-group">
-          <div class="question-text">Vengono registrati gli incidenti?</div>
-          <div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div>
-          <div class="btn-group" id="bg-s1-10"></div>
-        </div>
-      </div>
-      <div class="question-row">
-        <div class="question-num">11</div>
-        <div class="question-text-group">
-          <div class="question-text">Vengono registrate le medicazioni?</div>
-          <div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div>
-          <div class="btn-group" id="bg-s1-11"></div>
-        </div>
-      </div>
-      <div class="question-row">
-        <div class="question-num">12</div>
-        <div class="question-text-group">
-          <div class="question-text">Vengono registrati i comportamenti e le situazioni pericolose?</div>
-          <div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div>
-          <div class="btn-group" id="bg-s1-12"></div>
-        </div>
-      </div>
-      <div class="question-row">
-        <div class="question-num">13</div>
-        <div class="question-text-group">
-          <div class="question-text">Vengono promossi atteggiamenti pro-attivi (es. box raccolta suggerimenti)?</div>
-          <div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div>
-          <div class="btn-group" id="bg-s1-13"></div>
-        </div>
-      </div>
+      <div class="question-row"><div class="question-num">9</div><div class="question-text-group"><div class="question-text">Vengono registrati gli infortuni?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s1-9"></div></div></div>
+      <div class="question-row"><div class="question-num">10</div><div class="question-text-group"><div class="question-text">Vengono registrati gli incidenti?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s1-10"></div></div></div>
+      <div class="question-row"><div class="question-num">11</div><div class="question-text-group"><div class="question-text">Vengono registrate le medicazioni?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s1-11"></div></div></div>
+      <div class="question-row"><div class="question-num">12</div><div class="question-text-group"><div class="question-text">Vengono registrati i comportamenti e le situazioni pericolose?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s1-12"></div></div></div>
+      <div class="question-row"><div class="question-num">13</div><div class="question-text-group"><div class="question-text">Vengono promossi atteggiamenti pro-attivi (es. box raccolta suggerimenti)?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s1-13"></div></div></div>
     </div>
 
     <div class="subsection">
       <div class="subsection-title">Contromisure e Formazione</div>
-      <div class="question-row">
-        <div class="question-num">14</div>
-        <div class="question-text-group">
-          <div class="question-text">Analisi causa degli accadimenti</div>
-          <div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div>
-          <div class="btn-group" id="bg-s1-14"></div>
-        </div>
-      </div>
-      <div class="question-row">
-        <div class="question-num">15</div>
-        <div class="question-text-group">
-          <div class="question-text">Applicazione delle contromisure</div>
-          <div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div>
-          <div class="btn-group" id="bg-s1-15"></div>
-        </div>
-      </div>
-      <div class="question-row">
-        <div class="question-num">16</div>
-        <div class="question-text-group">
-          <div class="question-text">Analisi dell'efficacia delle contromisure e della formazione</div>
-          <div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div>
-          <div class="btn-group" id="bg-s1-16"></div>
-        </div>
-      </div>
+      <div class="question-row"><div class="question-num">14</div><div class="question-text-group"><div class="question-text">Analisi causa degli accadimenti</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s1-14"></div></div></div>
+      <div class="question-row"><div class="question-num">15</div><div class="question-text-group"><div class="question-text">Applicazione delle contromisure</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s1-15"></div></div></div>
+      <div class="question-row"><div class="question-num">16</div><div class="question-text-group"><div class="question-text">Analisi dell'efficacia delle contromisure e della formazione</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s1-16"></div></div></div>
     </div>
 
     <div class="subsection">
@@ -1025,14 +1061,12 @@ svg.gauge { overflow: visible; }
   </div>
   <div class="section-progress-bar"><div class="section-progress-fill" id="prog-2" style="width:0%;background:#2d9e6f"></div></div>
   <div class="section-body" id="body-2">
-
     <div class="subsection">
       <div class="subsection-title">Formalizzazione dell'Organigramma</div>
       <div class="question-row"><div class="question-num">1</div><div class="question-text-group"><div class="question-text">Esiste un organigramma formalizzato?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,01</div><div class="btn-group" id="bg-s2-1"></div></div></div>
       <div class="question-row"><div class="question-num">2</div><div class="question-text-group"><div class="question-text">L'organigramma risponde alla struttura organizzativa attuale?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,03</div><div class="btn-group" id="bg-s2-2"></div></div></div>
       <div class="question-row"><div class="question-num">3</div><div class="question-text-group"><div class="question-text">L'organigramma viene aggiornato ogni qualvolta si presentano variazioni?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,01</div><div class="btn-group" id="bg-s2-3"></div></div></div>
     </div>
-
     <div class="subsection">
       <div class="subsection-title">Formalizzazione delle Job Description</div>
       <div class="question-row"><div class="question-num">4</div><div class="question-text-group"><div class="question-text">Esistono Job Description formalizzate?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,025</div><div class="btn-group" id="bg-s2-4"></div></div></div>
@@ -1041,20 +1075,17 @@ svg.gauge { overflow: visible; }
       <div class="question-row"><div class="question-num">7</div><div class="question-text-group"><div class="question-text">Le JD comprendono: Requisiti del ruolo</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,025</div><div class="btn-group" id="bg-s2-7"></div></div></div>
       <div class="question-row"><div class="question-num">8</div><div class="question-text-group"><div class="question-text">Le Job Description prevedono l'identificazione di un livello atteso?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,025</div><div class="btn-group" id="bg-s2-8"></div></div></div>
     </div>
-
     <div class="subsection">
       <div class="subsection-title">Valutazione del Personale (Job Description)</div>
       <div class="question-row"><div class="question-num">9</div><div class="question-text-group"><div class="question-text">L'Azienda applica un modello di valutazione?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-9"></div></div></div>
       <div class="question-row"><div class="question-num">10</div><div class="question-text-group"><div class="question-text">Formalizza le valutazioni con radar chart o strumenti equivalenti?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-10"></div></div></div>
       <div class="question-row"><div class="question-num">11</div><div class="question-text-group"><div class="question-text">La valutazione è fatta con cadenze prestabilite?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,025</div><div class="btn-group" id="bg-s2-11"></div></div></div>
     </div>
-
     <div class="subsection">
       <div class="subsection-title">Valutazione del Personale (Punti di Forza)</div>
       <div class="question-row"><div class="question-num">12</div><div class="question-text-group"><div class="question-text">L'Azienda valuta le competenze extra job?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-12"></div></div></div>
       <div class="question-row"><div class="question-num">13</div><div class="question-text-group"><div class="question-text">L'Azienda formalizza e tiene traccia delle competenze extra job?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-13"></div></div></div>
     </div>
-
     <div class="subsection">
       <div class="subsection-title">Analisi del GAP Formativo</div>
       <div class="question-row"><div class="question-num">14</div><div class="question-text-group"><div class="question-text">L'Azienda valuta il GAP formativo post-valutazione?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,025</div><div class="btn-group" id="bg-s2-14"></div></div></div>
@@ -1062,7 +1093,6 @@ svg.gauge { overflow: visible; }
       <div class="question-row"><div class="question-num">16</div><div class="question-text-group"><div class="question-text">L'azienda sviluppa percorsi formativi personalizzati?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,025</div><div class="btn-group" id="bg-s2-16"></div></div></div>
       <div class="question-row"><div class="question-num">17</div><div class="question-text-group"><div class="question-text">L'Azienda analizza l'efficacia del percorso formativo?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,025</div><div class="btn-group" id="bg-s2-17"></div></div></div>
     </div>
-
     <div class="subsection">
       <div class="subsection-title">Gestione delle Figure Chiave</div>
       <div class="question-row"><div class="question-num">18</div><div class="question-text-group"><div class="question-text">L'Azienda ha individuato le figure chiave dell'organizzazione?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-18"></div></div></div>
@@ -1071,7 +1101,6 @@ svg.gauge { overflow: visible; }
       <div class="question-row"><div class="question-num">21</div><div class="question-text-group"><div class="question-text">L'Azienda conosce le aspettative personali delle figure chiave?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-21"></div></div></div>
       <div class="question-row"><div class="question-num">22</div><div class="question-text-group"><div class="question-text">L'Azienda utilizza sistemi di premialità specifici per le figure chiave?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-22"></div></div></div>
     </div>
-
     <div class="subsection">
       <div class="subsection-title">Non Conformismo Costruttivo</div>
       <div class="question-row"><div class="question-num">23</div><div class="question-text-group"><div class="question-text">I dipendenti mettono in discussione il loro status quo?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s2-23"></div></div></div>
@@ -1101,7 +1130,6 @@ svg.gauge { overflow: visible; }
   </div>
   <div class="section-progress-bar"><div class="section-progress-fill" id="prog-3" style="width:0%;background:#3b6b9c"></div></div>
   <div class="section-body" id="body-3">
-
     <div class="subsection">
       <div class="subsection-title">Raccolta Dati</div>
       <div class="question-row"><div class="question-num">1</div><div class="question-text-group"><div class="question-text">Stato di utilizzo del sistema ERP</div><div class="question-decl">Decl. A — Livello applicazione &nbsp;|&nbsp; Peso: 0,02</div><div class="btn-group" id="bg-s3-1"></div></div></div>
@@ -1115,21 +1143,18 @@ svg.gauge { overflow: visible; }
       <div class="question-row"><div class="question-num">9</div><div class="question-text-group"><div class="question-text">Status mappatura dei materiali</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,02</div><div class="btn-group" id="bg-s3-9"></div></div></div>
       <div class="question-row"><div class="question-num">10</div><div class="question-text-group"><div class="question-text">Livello di informatizzazione della raccolta dati (materiali)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,02</div><div class="btn-group" id="bg-s3-10"></div></div></div>
     </div>
-
     <div class="subsection">
       <div class="subsection-title">Definizione dello Standard</div>
       <div class="question-row"><div class="question-num">11</div><div class="question-text-group"><div class="question-text">Esistono tempi ciclo standard?</div><div class="question-decl">Decl. A — Livello applicazione &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s3-11"></div></div></div>
       <div class="question-row"><div class="question-num">12</div><div class="question-text-group"><div class="question-text">Esistono distinte base?</div><div class="question-decl">Decl. A — Livello applicazione &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s3-12"></div></div></div>
       <div class="question-row"><div class="question-num">13</div><div class="question-text-group"><div class="question-text">Si analizzano costantemente gli scostamenti dallo standard?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s3-13"></div></div></div>
     </div>
-
     <div class="subsection">
       <div class="subsection-title">Area Critica e Team di Lavoro</div>
       <div class="question-row"><div class="question-num">14</div><div class="question-text-group"><div class="question-text">Si utilizza un approccio verticale nei progetti di miglioramento?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,02</div><div class="btn-group" id="bg-s3-14"></div></div></div>
       <div class="question-row"><div class="question-num">15</div><div class="question-text-group"><div class="question-text">L'area critica viene individuata in base ai principi ZPS (strategicità, economicità…)?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,03</div><div class="btn-group" id="bg-s3-15"></div></div></div>
       <div class="question-row"><div class="question-num">16</div><div class="question-text-group"><div class="question-text">Si ha l'abitudine di individuare un team di lavoro (team di progetto)?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,03</div><div class="btn-group" id="bg-s3-16"></div></div></div>
     </div>
-
     <div class="subsection">
       <div class="subsection-title">KPI di Produzione</div>
       <div class="question-row"><div class="question-num">17</div><div class="question-text-group"><div class="question-text">Sono stati individuati dei KPI's di riferimento?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s3-17"></div></div></div>
@@ -1141,7 +1166,6 @@ svg.gauge { overflow: visible; }
       <div class="question-row"><div class="question-num">23</div><div class="question-text-group"><div class="question-text">Stato KPI's acquisti (Z18)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-23"></div></div></div>
       <div class="question-row"><div class="question-num">24</div><div class="question-text-group"><div class="question-text">Stato KPI's materiali (Z19)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-24"></div></div></div>
     </div>
-
     <div class="subsection">
       <div class="subsection-title">Organizzazione e Layout</div>
       <div class="question-row"><div class="question-num">25</div><div class="question-text-group"><div class="question-text">Esiste un layout formalizzato?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-25"></div></div></div>
@@ -1150,7 +1174,6 @@ svg.gauge { overflow: visible; }
       <div class="question-row"><div class="question-num">28</div><div class="question-text-group"><div class="question-text">Organizzazione dei flussi fisici del personale</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-28"></div></div></div>
       <div class="question-row"><div class="question-num">29</div><div class="question-text-group"><div class="question-text">Utilizzo sistemi Paperless (Z16)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-29"></div></div></div>
     </div>
-
     <div class="subsection">
       <div class="subsection-title">Azioni e Contromisure</div>
       <div class="question-row"><div class="question-num">30</div><div class="question-text-group"><div class="question-text">Esistono piani operativi in funzione dell'analisi dei KPI's?</div><div class="question-decl">Decl. B — Qualità &nbsp;|&nbsp; Peso: 0,04</div><div class="btn-group" id="bg-s3-30"></div></div></div>
@@ -1176,7 +1199,6 @@ svg.gauge { overflow: visible; }
   </div>
   <div class="section-progress-bar"><div class="section-progress-fill" id="prog-4" style="width:0%;background:#e07c3a"></div></div>
   <div class="section-body" id="body-4">
-
     <div class="subsection">
       <div class="subsection-title">Raccolta Dati</div>
       <div class="question-row"><div class="question-num">1</div><div class="question-text-group"><div class="question-text">Livello di mappatura dei processi aziendali</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s4-1"></div></div></div>
@@ -1187,7 +1209,6 @@ svg.gauge { overflow: visible; }
       <div class="question-row"><div class="question-num">6</div><div class="question-text-group"><div class="question-text">Esiste una differenziazione tra costi specifici e costi comuni?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s4-6"></div></div></div>
       <div class="question-row"><div class="question-num">7</div><div class="question-text-group"><div class="question-text">L'azienda ha individuato driver per la ripartizione dei costi comuni?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s4-7"></div></div></div>
     </div>
-
     <div class="subsection">
       <div class="subsection-title">KPI Economici</div>
       <div class="question-row"><div class="question-num">8</div><div class="question-text-group"><div class="question-text">Stato KPI's conto economico di azienda (Z5)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,12</div><div class="btn-group" id="bg-s4-8"></div></div></div>
@@ -1195,7 +1216,6 @@ svg.gauge { overflow: visible; }
       <div class="question-row"><div class="question-num">10</div><div class="question-text-group"><div class="question-text">Stato KPI's tariffe impianto (Z6)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,12</div><div class="btn-group" id="bg-s4-10"></div></div></div>
       <div class="question-row"><div class="question-num">11</div><div class="question-text-group"><div class="question-text">Stato KPI's Budget (Z1)</div><div class="question-decl">Decl. D — Livello completamento &nbsp;|&nbsp; Peso: 0,12</div><div class="btn-group" id="bg-s4-11"></div></div></div>
     </div>
-
     <div class="subsection">
       <div class="subsection-title">Analisi dei Dati</div>
       <div class="question-row"><div class="question-num">12</div><div class="question-text-group"><div class="question-text">Vengono periodicamente definiti piani di budget?</div><div class="question-decl">Decl. C — SI / NO &nbsp;|&nbsp; Peso: 0,05</div><div class="btn-group" id="bg-s4-12"></div></div></div>
@@ -1220,16 +1240,12 @@ svg.gauge { overflow: visible; }
                 <stop offset="100%" style="stop-color:#2d9e6f"/>
               </linearGradient>
             </defs>
-            <!-- background arc -->
             <path d="M 15 95 A 75 75 0 0 1 165 95" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="14" stroke-linecap="round"/>
-            <!-- colored arc -->
             <path id="gauge-arc" d="M 15 95 A 75 75 0 0 1 165 95" fill="none" stroke="url(#gGrad)" stroke-width="14" stroke-linecap="round" stroke-dasharray="0 236"/>
-            <!-- needle -->
             <g id="gauge-needle" transform="rotate(-90 90 95)">
               <line x1="90" y1="95" x2="90" y2="30" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
               <circle cx="90" cy="95" r="6" fill="white"/>
             </g>
-            <!-- center text -->
             <text id="gauge-text" x="90" y="88" text-anchor="middle" fill="white" font-family="'Playfair Display',serif" font-size="26" font-weight="700">—</text>
             <text x="90" y="104" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="'DM Sans',sans-serif" font-size="11">/ 5</text>
           </svg>
@@ -1299,15 +1315,11 @@ svg.gauge { overflow: visible; }
 </div><!-- /container -->
 
 <script>
-// ============================================================
-// DATA — Questions per section: [id, decl, peso]
-// ============================================================
 const SECTIONS = {
   1: {
     weight: 0.15,
     color: '#d4a03c',
     questions: [
-      // Presupposti
       {id:'s1-1', decl:'C', peso:0.05},
       {id:'s1-2', decl:'C', peso:0.05},
       {id:'s1-3', decl:'C', peso:0.05},
@@ -1316,17 +1328,14 @@ const SECTIONS = {
       {id:'s1-6', decl:'C', peso:0.05},
       {id:'s1-7', decl:'C', peso:0.05},
       {id:'s1-8', decl:'B', peso:0.05},
-      // KPI
       {id:'s1-9',  decl:'C', peso:0.05},
       {id:'s1-10', decl:'C', peso:0.05},
       {id:'s1-11', decl:'C', peso:0.05},
       {id:'s1-12', decl:'C', peso:0.05},
       {id:'s1-13', decl:'C', peso:0.05},
-      // Contromisure
       {id:'s1-14', decl:'B', peso:0.05},
       {id:'s1-15', decl:'B', peso:0.05},
       {id:'s1-16', decl:'B', peso:0.05},
-      // Events — special, managed separately
       {id:'s1-ev',  decl:'E', peso:0.20}
     ]
   },
@@ -1421,12 +1430,10 @@ const SECTIONS = {
   }
 };
 
-// State
 const scores = {};
 let evScore = 5;
 let evTouched = false;
 
-// Declaratoria configs
 const DECL = {
   A: [
     {val:1, label:'Non applica'},
@@ -1481,13 +1488,12 @@ function selectScore(qid, val, decl, container) {
 
 function calcSectionScore(sectionNum) {
   const qs = SECTIONS[sectionNum].questions;
-  let totalPeso = 0, totalWeighted = 0, answered = 0;
+  let totalPeso = 0, totalWeighted = 0;
   qs.forEach(q => {
     if (q.decl === 'E') {
       if (evTouched) {
         totalPeso += q.peso;
         totalWeighted += evScore * q.peso;
-        answered++;
       }
       return;
     }
@@ -1495,11 +1501,10 @@ function calcSectionScore(sectionNum) {
     if (s !== undefined) {
       totalPeso += q.peso;
       totalWeighted += s * q.peso;
-      answered++;
     }
   });
   if (totalPeso === 0) return null;
-  return totalWeighted; // raw weighted sum (since all pesosum to 1, this is 1-5 range)
+  return totalWeighted;
 }
 
 function updateAll() {
@@ -1512,13 +1517,11 @@ function updateAll() {
     document.getElementById('dash-s' + i).textContent = disp;
     const pct = s !== null ? Math.min(100, (s/5)*100) : 0;
     document.getElementById('prog-' + i).style.width = pct + '%';
-    // result bars
     if (document.getElementById('res-s'+i)) {
       document.getElementById('res-s'+i).textContent = disp;
       document.getElementById('bar-s'+i).style.width = pct + '%';
     }
   }
-  // ZPS total
   let total = 0, hasAny = false;
   for (let i = 1; i <= 4; i++) {
     if (sScores[i] !== null) {
@@ -1539,24 +1542,22 @@ function updateAll() {
   document.getElementById('dash-total').textContent = totalDisp;
   document.getElementById('gauge-text').textContent = totalDisp;
   updateGauge(total, true);
-  // Band
   let band, bandBg, bandColor;
-  if (total < 2) { band='Critico'; bandBg='rgba(217,74,74,0.12)'; bandColor='#d94a4a'; }
-  else if (total < 3) { band='Insufficiente'; bandBg='rgba(224,124,58,0.12)'; bandColor='#e07c3a'; }
-  else if (total < 4) { band='In Sviluppo'; bandBg='rgba(212,160,60,0.12)'; bandColor='#d4a03c'; }
-  else { band='Maturo'; bandBg='rgba(45,158,111,0.12)'; bandColor='#2d9e6f'; }
+  if (total < 2)      { band='Critico';      bandBg='rgba(217,74,74,0.12)';    bandColor='#d94a4a'; }
+  else if (total < 3) { band='Insufficiente'; bandBg='rgba(224,124,58,0.12)';  bandColor='#e07c3a'; }
+  else if (total < 4) { band='In Sviluppo';   bandBg='rgba(212,160,60,0.12)';  bandColor='#d4a03c'; }
+  else                { band='Maturo';         bandBg='rgba(45,158,111,0.12)'; bandColor='#2d9e6f'; }
   const bandEl = document.getElementById('dash-band');
   bandEl.textContent = band;
   bandEl.style.background = bandBg;
   bandEl.style.color = bandColor;
-  // interpretation highlight
   for (let k = 1; k <= 4; k++) {
     document.getElementById('interp-' + k).classList.remove('active-interp');
   }
-  if (total < 2) document.getElementById('interp-1').classList.add('active-interp');
+  if (total < 2)      document.getElementById('interp-1').classList.add('active-interp');
   else if (total < 3) document.getElementById('interp-2').classList.add('active-interp');
   else if (total < 4) document.getElementById('interp-3').classList.add('active-interp');
-  else document.getElementById('interp-4').classList.add('active-interp');
+  else                document.getElementById('interp-4').classList.add('active-interp');
 }
 
 function updateGauge(val, active) {
@@ -1564,32 +1565,37 @@ function updateGauge(val, active) {
   const pct = active ? Math.min(1, val / 5) : 0;
   const dashArr = (pct * totalArcLen) + ' ' + ((1-pct)*totalArcLen + 10);
   document.getElementById('gauge-arc').setAttribute('stroke-dasharray', dashArr);
-  // needle
   const angle = -90 + pct * 180;
   document.getElementById('gauge-needle').setAttribute('transform', 'rotate(' + angle + ' 90 95)');
 }
 
+// FIX: variabile 'grave' ora correttamente dichiarata
 function calcEvents() {
   evTouched = true;
-  const lieve = parseInt(document.getElementById('ev-lieve').value)||0;
-  const med   = parseInt(document.getElementById('ev-med').value)||0;
-  const inc   = parseInt(document.getElementById('ev-inc').value)||0;
-  const sap   = parseInt(document.getElementById('ev-sap').value)||0;
-  const cGrave = grave*300, cLieve=lieve*10, cMed=med*5, cInc=inc*3, cSap=sap*1;
+  const grave = parseInt(document.getElementById('ev-grave').value) || 0;  // ← BUG CORRETTO
+  const lieve = parseInt(document.getElementById('ev-lieve').value) || 0;
+  const med   = parseInt(document.getElementById('ev-med').value)   || 0;
+  const inc   = parseInt(document.getElementById('ev-inc').value)   || 0;
+  const sap   = parseInt(document.getElementById('ev-sap').value)   || 0;
+  const cGrave = grave * 300;
+  const cLieve = lieve * 10;
+  const cMed   = med   * 5;
+  const cInc   = inc   * 3;
+  const cSap   = sap   * 1;
   document.getElementById('ev-grave-c').textContent = cGrave;
   document.getElementById('ev-lieve-c').textContent = cLieve;
   document.getElementById('ev-med-c').textContent   = cMed;
   document.getElementById('ev-inc-c').textContent   = cInc;
   document.getElementById('ev-sap-c').textContent   = cSap;
-  const tot = cGrave+cLieve+cMed+cInc+cSap;
+  const tot = cGrave + cLieve + cMed + cInc + cSap;
   document.getElementById('ev-total-disp').textContent = 'Totale: ' + tot;
   let sc, band;
-  if (tot === 0)         { sc=5; band='x = 0 → Nessun evento (eccellente)'; }
-  else if (tot <= 3)     { sc=4; band='0 < x ≤ 3 → Molto basso'; }
-  else if (tot <= 5)     { sc=3; band='3 < x ≤ 5 → Basso'; }
-  else if (tot <= 10)    { sc=2; band='5 < x ≤ 10 → Medio'; }
-  else if (tot <= 300)   { sc=1; band='10 < x ≤ 300 → Alto'; }
-  else                   { sc=0; band='x ≥ 300 → Critico'; }
+  if (tot === 0)       { sc=5; band='x = 0 → Nessun evento (eccellente)'; }
+  else if (tot <= 3)   { sc=4; band='0 < x ≤ 3 → Molto basso'; }
+  else if (tot <= 5)   { sc=3; band='3 < x ≤ 5 → Basso'; }
+  else if (tot <= 10)  { sc=2; band='5 < x ≤ 10 → Medio'; }
+  else if (tot <= 300) { sc=1; band='10 < x ≤ 300 → Alto'; }
+  else                 { sc=0; band='x ≥ 300 → Critico'; }
   evScore = sc;
   document.getElementById('ev-score-disp').textContent = sc;
   document.getElementById('ev-band-disp').textContent = band;
@@ -1609,22 +1615,18 @@ function resetAll() {
   evScore = 5;
   evTouched = false;
   document.querySelectorAll('.score-btn').forEach(b => b.classList.remove('active'));
-  ['ev-grave','ev-lieve','ev-med','ev-inc','ev-sap'].forEach(id => document.getElementById(id).value=0);
-  ['ev-grave-c','ev-lieve-c','ev-med-c','ev-inc-c','ev-sap-c'].forEach(id => document.getElementById(id).textContent=0);
+  ['ev-grave','ev-lieve','ev-med','ev-inc','ev-sap'].forEach(id => document.getElementById(id).value = 0);
+  ['ev-grave-c','ev-lieve-c','ev-med-c','ev-inc-c','ev-sap-c'].forEach(id => document.getElementById(id).textContent = 0);
   document.getElementById('ev-total-disp').textContent = 'Totale: 0';
   document.getElementById('ev-score-disp').textContent = 5;
   document.getElementById('ev-band-disp').textContent = 'x = 0 → Nessun evento (eccellente)';
   updateAll();
 }
 
-// INIT
 function init() {
-  // Render buttons for all questions
   for (let sNum = 1; sNum <= 4; sNum++) {
     SECTIONS[sNum].questions.forEach(q => {
-      if (q.decl !== 'E') {
-        renderButtons(q.id, q.decl);
-      }
+      if (q.decl !== 'E') renderButtons(q.id, q.decl);
     });
   }
   updateAll();
